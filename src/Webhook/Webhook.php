@@ -55,7 +55,7 @@ class Webhook {
             throw new ValueError("Invalid or malformed webhook JSON: " . $rawJson);
         }
 
-        $this->_encodedJson = json_encode($decodedJson);
+        $this->_encodedJson = json_encode($decodedJson, JSON_FORCE_OBJECT);
         $this->_id = $decodedJson["id"];
         $this->_type = $decodedJson["type"];
         $this->_date = $decodedJson["date"];
@@ -151,7 +151,7 @@ class Webhook {
         }
 
         $isSignatureValid = Webhooks::validateWebhookSignature($webhook, $signature);
-        var_dump("VALID: ", $isSignatureValid);
+        //var_dump("VALID: ", $isSignatureValid);
 
         if (!$isSignatureValid) {
             throw new ApiException("Invalid webhook signature", 403);
@@ -250,7 +250,7 @@ class Webhook {
     {
         $calculatedSignature = hash_hmac('sha256', hash('sha256', $this->_encodedJson), $webhookSecret);
         $result = (strcmp($calculatedSignature, $expectedSignature) == 0);
-        var_dump("Result: ", $result);
+        //var_dump("Result: ", $result);
         return $result;
     }
 }
