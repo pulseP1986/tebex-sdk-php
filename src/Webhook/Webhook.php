@@ -55,7 +55,7 @@ class Webhook {
             throw new ValueError("Invalid or malformed webhook JSON: " . $rawJson);
         }
 
-        $this->_encodedJson = json_encode($decodedJson, JSON_FORCE_OBJECT);
+        $this->_encodedJson = json_encode($decodedJson);
         $this->_id = $decodedJson["id"];
         $this->_type = $decodedJson["type"];
         $this->_date = $decodedJson["date"];
@@ -248,7 +248,7 @@ class Webhook {
      */
     public function validateSignature(string $expectedSignature, string $webhookSecret): bool
     {
-        $calculatedSignature = hash_hmac('sha256', hash('sha256', $this->_encodedJson), $webhookSecret);
+        $calculatedSignature = hash_hmac('sha256', hash('sha256', $this->_rawJson), $webhookSecret);
         $result = (strcmp($calculatedSignature, $expectedSignature) == 0);
         //var_dump("Result: ", $result);
         return $result;
